@@ -29,7 +29,7 @@ class SortNumbersInAFileTest {
 	void fileNotFoundTest() {
 		FileNotFoundException exception = null;
 		try {
-			file.splitLargeFile("D:/abcd.txt", "D:/Testcases/");
+			file.splitLargeFile("abcd.txt", "Testcases/");
 		} catch (FileNotFoundException e) {
 			exception = e;
 		} catch (Exception e) {
@@ -43,7 +43,7 @@ class SortNumbersInAFileTest {
 	void fileFoundTest() {
 		Exception exception = null;
 		int noOfFiles = 0;
-		String path = "Testdata/";
+		String path = "Testdata/Split/";
 		try {
 			noOfFiles = file.splitLargeFile(path + "test.txt", path);
 		} catch (Exception e) {
@@ -69,7 +69,7 @@ class SortNumbersInAFileTest {
 	void successfulSpiltTest() {
 		Exception exception = null;
 		int noOfFiles = 0;
-		String path = "Testdata/";
+		String path = "Testdata/Split/";
 		try {
 			noOfFiles = file.splitLargeFile(path + "test.txt", path);
 		} catch (Exception e) {
@@ -94,7 +94,7 @@ class SortNumbersInAFileTest {
 	void failSpiltTest() {
 		Exception exception = null;
 		try {
-			file.splitLargeFile("Testdata/testFail.txt", "Testdata/");
+			file.splitLargeFile("Testdata/Split/testFail.txt", "Testdata/Split/");
 		} catch (NumberFormatException e) {
 			exception = e;
 		} catch (Exception e) {
@@ -132,10 +132,12 @@ class SortNumbersInAFileTest {
 
 	@Test
 	void failMergeFilesTest() {
-		NoSuchFileException exception = null;
+		IOException exception = null;
 		try {
 			file.mergeSortedFiles(2, "Testdata/Merge/Sorted.txt", "");
 		} catch (NoSuchFileException e) {
+			exception = e;
+		} catch (FileNotFoundException e) {
 			exception = e;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -156,7 +158,7 @@ class SortNumbersInAFileTest {
 		assertNull(exception);
 
 	}
-	
+
 	@Test
 	void getChunkFailTest() {
 		FileNotFoundException exception = null;

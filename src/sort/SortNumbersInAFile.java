@@ -13,8 +13,8 @@ import java.util.Scanner;
 
 public class SortNumbersInAFile {
 
-	public static final long MAX_FILE_SIZE = 9000000;
-	public static final int MAX_CHUNK_LENGTH = 9000000;
+	public static final long MAX_FILE_SIZE = 7000000;
+	public static final int MAX_LENGTH = 1000000;
 
 	/* Splits a large file into several temporary sorted small files */
 	public int splitLargeFile(String fileName, String path) throws IOException {
@@ -74,7 +74,7 @@ public class SortNumbersInAFile {
 		ArrayList<Integer> chunkPositionList = new ArrayList<Integer>();
 		ArrayList<Integer> filePositionList = new ArrayList<Integer>();
 
-		int limit = MAX_CHUNK_LENGTH / noOfFiles;
+		int limit = MAX_LENGTH / noOfFiles;
 
 		for (int i = 0; i < noOfFiles; i++) {
 			String fileName = path + "temp" + (i + 1) + ".txt";
@@ -93,15 +93,18 @@ public class SortNumbersInAFile {
 
 					if (chunk != null) {
 
-						/* Replace with new chunk from respective file, once all the existing entries are processed */
-						if (chunk.size() <= chunkPositionList.get(fileIndex)) { 
+						/*
+						 * Replace with new chunk from respective file, once all the existing entries
+						 * are processed
+						 */
+						if (chunk.size() <= chunkPositionList.get(fileIndex)) {
 							String fileName = path + "temp" + (fileIndex + 1) + ".txt";
 							fileChunkList.set(fileIndex, getChunk(fileName, filePositionList.get(fileIndex), limit));
 							filePositionList.set(fileIndex, filePositionList.get(fileIndex) + limit);
 							chunkPositionList.set(fileIndex, 0);
 							chunk = fileChunkList.get(fileIndex);
 						}
-						
+
 						/* If EOF is not reached, find minimum */
 						if (chunk != null) {
 							int value = chunk.get(chunkPositionList.get(fileIndex));
@@ -110,7 +113,7 @@ public class SortNumbersInAFile {
 								minFileIndex = fileIndex;
 							}
 						}
-					} 
+					}
 					fileIndex++;
 				}
 
@@ -122,15 +125,16 @@ public class SortNumbersInAFile {
 				/* Write the minimum value into the BufferedWriter */
 				chunkPositionList.set(minFileIndex, chunkPositionList.get(minFileIndex) + 1);
 				bw.append(Integer.toString(min)).append(System.lineSeparator());
-				
-				System.out.println(min);
 			}
 			bw.flush();
 		}
 
 	}
 
-	/* Returns a small chunk of file with certain number of lines, from a specified location */
+	/*
+	 * Returns a small chunk of file with certain number of lines, from a specified
+	 * location
+	 */
 	ArrayList<Integer> getChunk(String fileName, int pos, int limit) throws FileNotFoundException {
 
 		ArrayList<Integer> returnList = new ArrayList<Integer>();
@@ -175,10 +179,23 @@ public class SortNumbersInAFile {
 
 		SortNumbersInAFile largeFile = new SortNumbersInAFile();
 
-		String path = "Run/";
-		String outputFileName = path + "SortedFile.txt";
-		String inputFileName = path + "test.txt";
+		String path;
+		String inputFileName;
+		String outputFileName;
 		
+		if (args.length == 3) {
+			if (args[0].endsWith(File.separator)) {
+				path = args[0];
+			} else {
+				path = args[0] + File.separator;
+			}
+			inputFileName = path + args[1];
+			outputFileName = path + args[2];
+		} else {
+			path = "Run" + File.separator;
+			outputFileName = path + "SortedFile.txt";
+			inputFileName = path + "test.txt";
+		}
 
 		int noOfFiles = largeFile.splitLargeFile(inputFileName, path);
 		largeFile.mergeSortedFiles(noOfFiles, outputFileName, path);
